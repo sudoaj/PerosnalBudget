@@ -57,28 +57,27 @@ A comprehensive Next.js 14 budgeting application designed to replace traditional
 ## Usage Guide
 
 ### 1. Set Up Your Template
-- Navigate to the "Template" tab
+- Open the app and expand the **Budget Template** section in the Dashboard view.
 - Add your recurring income sources (salary, freelance, etc.)
 - Add recurring bills (rent, utilities, subscriptions)
 - Add typical expenses (groceries, entertainment)
 - Set up savings goals and debt payments
 
-### 2. Create Budget Periods
-- Go to the "Periods" tab
-- Click "New Period" to create a budget period
+### 2. Create and Manage Budget Periods
+- Go to the **Budget** view (now the first menu item)
+- Use the inline Period Manager to create, edit, or delete budget periods
 - Choose date range (typically aligned with pay periods)
-- The system will clone your template items
+- The system will clone your template items for each new period
 
 ### 3. Track Your Budget
-- Use the "Dashboard" to view your active period
+- Use the **Budget** view to manage your active period
 - Mark items as paid/unpaid as you complete transactions
 - Monitor your net balance in real-time
 - Get warnings if expenses exceed income
 
-### 4. Manage Your Data
-- Export your data for backup or analysis
-- Import previous backups
-- Clear all data to start fresh
+### 4. Dashboard & Data Management
+- Expand the **Dashboard** section to view analytics and summaries
+- Expand the **Data Management** section to export/import/clear your data
 
 ## Project Structure
 
@@ -86,7 +85,7 @@ A comprehensive Next.js 14 budgeting application designed to replace traditional
 src/
 ├── app/                    # Next.js App Router
 │   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Main application page
+│   └── page.tsx           # Main application page (all main views and sections)
 ├── components/
 │   ├── ui/                # Reusable UI components
 │   └── budget/            # Budget-specific components
@@ -113,6 +112,10 @@ Components follow the single responsibility principle with clear prop interfaces
 
 ### Responsive Strategy
 Mobile-first design with CSS Grid and Flexbox for layout, ensuring optimal experience across devices.
+
+### Unified Views
+- **Budget**: Manage periods and items in one place, with period creation/editing inline.
+- **Dashboard**: Analytics, template management, and data management are all accessible as collapsible sections.
 
 ## Available Scripts
 
