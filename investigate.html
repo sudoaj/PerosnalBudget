@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget App Investigation - Complete Next.js Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+        }
+        
+        .section h4 {
+            color: #5a6c7d;
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+        }
+        
+        .folder-structure {
+            background: #0d1117;
+            color: #f0f6fc;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid #21262d;
+            line-height: 1.6;
+        }
+        
+        .folder-structure .folder {
+            color: #79c0ff;
+            font-weight: bold;
+        }
+        
+        .folder-structure .file {
+            color: #7ee787;
+        }
+        
+        .folder-structure .component {
+            color: #ffa657;
+        }
+        
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            border: 1px solid #2d3748;
+            white-space: pre;
+        }
+        
+        .code-block .comment {
+            color: #68d391;
+            font-style: italic;
+        }
+        
+        .code-block .keyword {
+            color: #ff7aa2;
+            font-weight: bold;
+        }
+        
+        .code-block .string {
+            color: #5de4c7;
+        }
+        
+        .code-block .function {
+            color: #5fb3f3;
+        }
+        
+        .code-block .property {
+            color: #bad761;
+        }
+        
+        .code-block .number {
+            color: #d19a66;
+        }
+        
+        .code-block .operator {
+            color: #c3a6ff;
+        }
+        
+        .code-block .punctuation {
+            color: #ffffff;
+        }
+        
+        @media (max-width: 768px) {
+            .code-block {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+        
+        .step {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #4299e1;
+        }
+        
+        .step-number {
+            background: #4299e1;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .tech-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .info {
+            background: #cce7ff;
+            border: 1px solid #91c9ff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .command {
+            background: #0d1117;
+            color: #7ee787;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+            display: inline-block;
+            margin: 8px 0;
+            border: 1px solid #21262d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .inline-code {
+            background: #f6f8fa;
+            color: #24292f;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+            font-size: 13px;
+            border: 1px solid #d1d9e0;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .layer {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .layer h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Budget App Investigation</h1>
+            <p>Complete Next.js 14 Application Analysis & Recreation Guide</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="nav-tab" onclick="showTab('structure')">📁 Structure</button>
+                <button class="nav-tab" onclick="showTab('features')">⚡ Features</button>
+                <button class="nav-tab" onclick="showTab('setup')">🛠️ Setup Guide</button>
+                <button class="nav-tab" onclick="showTab('components')">🧩 Components</button>
+                <button class="nav-tab" onclick="showTab('state')">🔄 State Management</button>
+                <button class="nav-tab" onclick="showTab('exports')">📤 Export System</button>
+                <button class="nav-tab" onclick="showTab('recreation')">🔄 Recreation Steps</button>
+            </div>
+            
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="section">
+                    <h2>📊 Project Overview</h2>
+                    <div class="info">
+                        <strong>Budget App</strong> - A comprehensive Next.js 14 budgeting application built with modern React patterns, TypeScript, and a focus on user experience and maintainability.
+                    </div>
+                    
+                    <h3>🎯 Core Purpose</h3>
+                    <p>This application helps users manage their personal finances through:</p>
+                    <ul>
+                        <li><strong>Template System:</strong> Create reusable budget structures</li>
+                        <li><strong>Period Management:</strong> Organize budgets by time periods</li>
+                        <li><strong>Category Organization:</strong> Income, Bills, Expenses, Savings, Debt</li>
+                        <li><strong>Data Export:</strong> Multiple export formats (Markdown, CSV, JSON)</li>
+                        <li><strong>Real-time Analytics:</strong> Live budget calculations and insights</li>
+                    </ul>
+                    
+                    <h3>🚀 Tech Stack</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">Next.js 14</span>
+                        <span class="tech-item">TypeScript</span>
+                        <span class="tech-item">React 18</span>
+                        <span class="tech-item">Zustand</span>
+                        <span class="tech-item">Tailwind CSS</span>
+                        <span class="tech-item">shadcn/ui</span>
+                        <span class="tech-item">Framer Motion</span>
+                        <span class="tech-item">Radix UI</span>
+                        <span class="tech-item">Vitest</span>
+                        <span class="tech-item">Lucide Icons</span>
+                    </div>
+                    
+                    <h3>🏗️ Architecture Philosophy</h3>
+                    <div class="architecture-diagram">
+                        <div class="layer">
+                            <h4>🎨 Presentation Layer</h4>
+                            <p>React Components + shadcn/ui + Tailwind CSS</p>
+                        </div>
+                        <div class="layer">
+                            <h4>🧠 Business Logic</h4>
+                            <p>Zustand Store + Custom Hooks + TypeScript</p>
+                        </div>
+                        <div class="layer">
+                            <h4>💾 Data Layer</h4>
+                            <p>Storage Adapter Pattern + localStorage + Export System</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Structure Tab -->
+            <div id="structure" class="tab-content">
+                <div class="section">
+                    <h2>📁 Complete Project Structure Analysis</h2>
+                    
+                    <div class="info">
+                        <strong>🎯 Structure Philosophy:</strong> This Next.js 14 app follows modern React patterns with clear separation of concerns, feature-based organization, and scalable architecture principles.
+                    </div>
+                    
+                    <div class="folder-structure">
+BudgetApp/
+├── <span class="folder">📁 .git/</span>                      # Git version control
+├── <span class="folder">📁 .next/</span>                     # Next.js build output (auto-generated)
+├── <span class="folder">📁 .vscode/</span>                   # VS Code workspace settings
+│   └── <span class="file">tasks.json</span>                  # Build/dev tasks configuration
+├── <span class="folder">📁 node_modules/</span>              # Dependencies (auto-generated)
+│
+├── <span class="folder">📁 public/</span>                    # Static assets served at root
+│   ├── <span class="file">favicon.ico</span>                 # Browser tab icon
+│   └── <span class="file">images/</span>                     # App images and icons
+│
+├── <span class="folder">📁 src/</span>                       # Source code (everything we build)
+│   │
+│   ├── <span class="folder">📁 app/</span>                   # 🚀 Next.js 14 App Router
+│   │   ├── <span class="file">layout.tsx</span>              # Root layout with providers & metadata
+│   │   ├── <span class="file">page.tsx</span>                # Main homepage (our SPA entry point)
+│   │   ├── <span class="file">globals.css</span>             # Global styles + Tailwind imports
+│   │   ├── <span class="file">loading.tsx</span>             # Loading UI for page transitions
+│   │   └── <span class="file">not-found.tsx</span>           # 404 error page
+│   │
+│   ├── <span class="folder">📁 components/</span>            # 🧩 React Components Library
+│   │   │
+│   │   ├── <span class="folder">📁 ui/</span>                # 🎨 Base UI Components (Design System)
+│   │   │   ├── <span class="component">button.tsx</span>     # Reusable button with variants
+│   │   │   ├── <span class="component">card.tsx</span>       # Container with header/content/footer
+│   │   │   ├── <span class="component">input.tsx</span>      # Form input with validation styling
+│   │   │   ├── <span class="component">select.tsx</span>     # Dropdown with search & multi-select
+│   │   │   ├── <span class="component">label.tsx</span>      # Accessible form labels
+│   │   │   ├── <span class="component">checkbox.tsx</span>   # Checkbox with indeterminate state
+│   │   │   └── <span class="component">dropdown-menu.tsx</span> # Context menu component
+│   │   │
+│   │   ├── <span class="folder">📁 budget/</span>            # 💰 Budget-Specific Business Components
+│   │   │   │
+│   │   │   ├── <span class="component">dashboard.tsx</span>              # 📊 Analytics & overview with charts
+│   │   │   ├── <span class="component">budget-summary.tsx</span>         # 📈 Real-time calculations & totals
+│   │   │   ├── <span class="component">budget-category-section.tsx</span> # 📋 Category container with CRUD
+│   │   │   ├── <span class="component">budget-item-row.tsx</span>        # 💳 Individual item display & actions
+│   │   │   ├── <span class="component">template-item-picker.tsx</span>   # 🎯 Template selection interface
+│   │   │   ├── <span class="component">period-manager.tsx</span>         # 📅 Period CRUD operations
+│   │   │   ├── <span class="component">template-manager.tsx</span>       # 📝 Template CRUD operations
+│   │   │   ├── <span class="component">data-management.tsx</span>        # 📤 Export/Import functionality
+│   │   │   ├── <span class="component">template-upload.tsx</span>        # 📁 Template file upload UI
+│   │   │   │
+│   │   │   └── <span class="folder">📁 forms/</span>         # 📝 Category-Specific Input Forms
+│   │   │       ├── <span class="component">index.ts</span>               # Form exports & types
+│   │   │       ├── <span class="component">income-form.tsx</span>        # 💰 Income entry (no paid status)
+│   │   │       ├── <span class="component">bill-form.tsx</span>          # 📄 Bills with due dates & frequency
+│   │   │       ├── <span class="component">expense-form.tsx</span>       # 🛒 Expenses with frequency tracking
+│   │   │       ├── <span class="component">savings-form.tsx</span>       # 🏦 Savings goals & amounts
+│   │   │       └── <span class="component">debt-form.tsx</span>          # 💳 Debt payments & tracking
+│   │   │
+│   │   ├── <span class="component">theme-provider.tsx</span>  # 🌙 Dark/light theme context provider
+│   │   └── <span class="component">theme-toggle.tsx</span>    # 🔄 Theme switcher UI component
+│   │
+│   ├── <span class="folder">📁 lib/</span>                   # 🛠️ Utility Functions & Business Logic
+│   │   ├── <span class="file">utils.ts</span>                # 🔧 General utility functions & helpers
+│   │   ├── <span class="file">storage.ts</span>              # 💾 Storage adapter pattern for data persistence
+│   │   ├── <span class="file">export-utils.ts</span>         # 📤 Advanced export functionality (MD/CSV/JSON)
+│   │   ├── <span class="file">template-data.ts</span>        # 📋 Template data models & example data
+│   │   └── <span class="file">template-upload.ts</span>      # 📁 Template upload/validation logic
+│   │
+│   ├── <span class="folder">📁 store/</span>                 # 🏪 Global State Management
+│   │   └── <span class="file">budget.ts</span>               # 🧠 Zustand store with actions & computed values
+│   │
+│   ├── <span class="folder">📁 types/</span>                 # 📝 TypeScript Type Definitions
+│   │   └── <span class="file">budget.ts</span>               # 🎯 All interfaces, types & enums
+│   │
+│   └── <span class="folder">📁 test/</span>                  # 🧪 Testing Infrastructure
+│       ├── <span class="file">setup.ts</span>                # ⚙️ Test environment configuration
+│       └── <span class="file">storage.test.ts</span>         # 🔬 Storage adapter unit tests
+│
+├── <span class="file">📄 package.json</span>                 # 📦 Dependencies, scripts & project metadata
+├── <span class="file">📄 package-lock.json</span>            # 🔒 Exact dependency versions (auto-generated)
+├── <span class="file">📄 tsconfig.json</span>                # ⚙️ TypeScript compiler configuration
+├── <span class="file">📄 tailwind.config.js</span>           # 🎨 Tailwind CSS customization & theme
+├── <span class="file">📄 postcss.config.js</span>            # 🔧 CSS processing configuration
+├── <span class="file">📄 next.config.js</span>               # ⚙️ Next.js build & runtime configuration
+├── <span class="file">📄 next-env.d.ts</span>                # 📝 Next.js TypeScript definitions
+├── <span class="file">📄 vitest.config.ts</span>             # 🧪 Testing framework configuration
+├── <span class="file">📄 .eslintrc.json</span>               # 📏 Code linting rules & standards
+├── <span class="file">📄 .prettierrc</span>                  # 💄 Code formatting rules
+├── <span class="file">📄 .gitignore</span>                   # 🚫 Files to ignore in version control
+├── <span class="file">📄 README.md</span>                    # 📖 Project documentation
+└── <span class="file">📄 investigate.html</span>             # 🔍 This analysis file!
+                    </div>
+                    
+                    <h3>🏗️ Architecture Layers Deep Dive</h3>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>� App Router Layer (/src/app)</h4>
+                            <p><strong>Purpose:</strong> Next.js 14's new App Router for modern React patterns</p>
+                            <ul>
+                                <li><strong>layout.tsx:</strong> Wraps entire app with providers, fonts, metadata</li>
+                                <li><strong>page.tsx:</strong> Main SPA entry point with navigation logic</li>
+                                <li><strong>globals.css:</strong> Tailwind imports + custom global styles</li>
+                                <li><strong>Benefits:</strong> Better performance, streaming, nested layouts</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>🎨 UI Component System (/src/components/ui)</h4>
+                            <p><strong>Purpose:</strong> Reusable design system components</p>
+                            <ul>
+                                <li><strong>Built on:</strong> Radix UI primitives + Tailwind CSS</li>
+                                <li><strong>Features:</strong> Accessibility, variants, composability</li>
+                                <li><strong>Inspired by:</strong> shadcn/ui design patterns</li>
+                                <li><strong>Customizable:</strong> Easy to modify via class-variance-authority</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>💰 Business Logic Layer (/src/components/budget)</h4>
+                            <p><strong>Purpose:</strong> Budget-specific functionality and workflows</p>
+                            <ul>
+                                <li><strong>Feature-based:</strong> Each component handles specific domain logic</li>
+                                <li><strong>Composition:</strong> Components work together but stay focused</li>
+                                <li><strong>Forms:</strong> Category-specific input handling</li>
+                                <li><strong>Data Flow:</strong> Props down, events up pattern</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>�️ Utility Layer (/src/lib)</h4>
+                            <p><strong>Purpose:</strong> Pure functions and business logic</p>
+                            <ul>
+                                <li><strong>utils.ts:</strong> General helpers (currency, dates, formatting)</li>
+                                <li><strong>storage.ts:</strong> Adapter pattern for data persistence</li>
+                                <li><strong>export-utils.ts:</strong> Complex export logic for multiple formats</li>
+                                <li><strong>Benefits:</strong> Testable, reusable, framework-agnostic</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>🏪 State Management (/src/store)</h4>
+                            <p><strong>Purpose:</strong> Global application state with Zustand</p>
+                            <ul>
+                                <li><strong>Simple:</strong> No boilerplate like Redux</li>
+                                <li><strong>TypeScript:</strong> Full type safety</li>
+                                <li><strong>Persistence:</strong> Automatic localStorage sync</li>
+                                <li><strong>Performance:</strong> Minimal re-renders, selective subscriptions</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>� Type Safety (/src/types)</h4>
+                            <p><strong>Purpose:</strong> Centralized TypeScript definitions</p>
+                            <ul>
+                                <li><strong>Interfaces:</strong> All data structures defined</li>
+                                <li><strong>Enums:</strong> Category types, frequencies, etc.</li>
+                                <li><strong>Unions:</strong> Specific string literal types</li>
+                                <li><strong>Benefits:</strong> Compile-time error checking, autocomplete</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3>📊 Component Interaction Flow</h3>
+                    
+                    <div class="architecture-diagram">
+                        <div class="layer">
+                            <h4>🎯 User Interaction Flow</h4>
+                            <div class="code-block">
+<span class="function">User clicks</span> → <span class="property">Button</span> → <span class="keyword">Event Handler</span> → <span class="function">Store Action</span> → <span class="property">State Update</span> → <span class="keyword">Re-render</span>
+            │                                                                      │
+            └──────────────── <span class="string">localStorage.setItem()</span> ←──────────────────────┘
+                            </div>
+                        </div>
+                        
+                        <div class="layer">
+                            <h4>📋 Data Flow Pattern</h4>
+                            <div class="code-block">
+<span class="property">BudgetCategorySection</span>
+├── <span class="function">Template Picker</span> → <span class="keyword">Select Item</span> → <span class="property">Add to Period</span>
+├── <span class="function">Budget Item Rows</span> → <span class="keyword">Edit/Delete</span> → <span class="property">Update Store</span>
+└── <span class="function">Summary Display</span> ← <span class="keyword">Computed Values</span> ← <span class="property">Store State</span>
+                            </div>
+                        </div>
+                        
+                        <div class="layer">
+                            <h4>💾 Storage Persistence</h4>
+                            <div class="code-block">
+<span class="property">Store Action</span> → <span class="function">Storage Adapter</span> → <span class="keyword">localStorage</span>
+                    ↓                           ↓
+<span class="property">State Change</span> ← <span class="function">JSON.parse()</span> ← <span class="keyword">JSON.stringify()</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>🔧 Configuration Files Explained</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">⚙️</span>
+                        <strong>package.json - Project Dependencies</strong>
+                        <div class="code-block">
+<span class="punctuation">{</span>
+  <span class="property">"dependencies"</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+    <span class="string">"next"</span><span class="punctuation">:</span> <span class="string">"14.2.5"</span><span class="punctuation">,</span>           <span class="comment">// Next.js framework</span>
+    <span class="string">"react"</span><span class="punctuation">:</span> <span class="string">"^18"</span><span class="punctuation">,</span>              <span class="comment">// React library</span>
+    <span class="string">"zustand"</span><span class="punctuation">:</span> <span class="string">"^4.5.4"</span><span class="punctuation">,</span>        <span class="comment">// State management</span>
+    <span class="string">"framer-motion"</span><span class="punctuation">:</span> <span class="string">"^11.3.8"</span><span class="punctuation">,</span> <span class="comment">// Animations</span>
+    <span class="string">"lucide-react"</span><span class="punctuation">:</span> <span class="string">"^0.407.0"</span><span class="punctuation">,</span> <span class="comment">// Icon library</span>
+    <span class="string">"tailwind-merge"</span><span class="punctuation">:</span> <span class="string">"^2.4.0"</span>  <span class="comment">// CSS utility merging</span>
+  <span class="punctuation">},</span>
+  <span class="property">"scripts"</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+    <span class="string">"dev"</span><span class="punctuation">:</span> <span class="string">"next dev"</span><span class="punctuation">,</span>          <span class="comment">// Development server</span>
+    <span class="string">"build"</span><span class="punctuation">:</span> <span class="string">"next build"</span><span class="punctuation">,</span>        <span class="comment">// Production build</span>
+    <span class="string">"test"</span><span class="punctuation">:</span> <span class="string">"vitest"</span>             <span class="comment">// Run tests</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">🎨</span>
+                        <strong>tailwind.config.js - Styling Configuration</strong>
+                        <div class="code-block">
+<span class="keyword">module.exports</span> <span class="operator">=</span> <span class="punctuation">{</span>
+  <span class="property">content</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">'./src/**/*.{js,ts,jsx,tsx,mdx}'</span><span class="punctuation">],</span> <span class="comment">// File scanning</span>
+  <span class="property">theme</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+    <span class="property">extend</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+      <span class="property">colors</span><span class="punctuation">:</span> <span class="punctuation">{</span> <span class="comment">/* Custom color palette */</span> <span class="punctuation">},</span>
+      <span class="property">animation</span><span class="punctuation">:</span> <span class="punctuation">{</span> <span class="comment">/* Custom animations */</span> <span class="punctuation">}</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">},</span>
+  <span class="property">plugins</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="comment">/* Tailwind plugins */</span><span class="punctuation">]</span>
+<span class="punctuation">}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">📝</span>
+                        <strong>tsconfig.json - TypeScript Configuration</strong>
+                        <div class="code-block">
+<span class="punctuation">{</span>
+  <span class="property">"compilerOptions"</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+    <span class="property">"target"</span><span class="punctuation">:</span> <span class="string">"es5"</span><span class="punctuation">,</span>               <span class="comment">// JavaScript version target</span>
+    <span class="property">"strict"</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span>               <span class="comment">// Strict type checking</span>
+    <span class="property">"jsx"</span><span class="punctuation">:</span> <span class="string">"preserve"</span><span class="punctuation">,</span>            <span class="comment">// JSX handling</span>
+    <span class="property">"paths"</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+      <span class="string">"@/*"</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">"./src/*"</span><span class="punctuation">]</span>        <span class="comment">// Path aliasing for imports</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">}</span>
+                        </div>
+                    </div>
+                    
+                    <h3>🚀 Why This Structure Works</h3>
+                    
+                    <div class="success">
+                        <h4>✅ Benefits of This Architecture:</h4>
+                        <ul>
+                            <li><strong>🔍 Clear Separation:</strong> UI, business logic, and data layers are distinct</li>
+                            <li><strong>🔄 Reusability:</strong> Components can be easily reused and tested</li>
+                            <li><strong>📈 Scalability:</strong> Easy to add new features without breaking existing code</li>
+                            <li><strong>🛠️ Maintainability:</strong> Each file has a single responsibility</li>
+                            <li><strong>🎯 Type Safety:</strong> TypeScript catches errors at compile time</li>
+                            <li><strong>⚡ Performance:</strong> Next.js optimizations + efficient state management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Tab -->
+            <div id="features" class="tab-content">
+                <div class="section">
+                    <h2>⚡ Key Features</h2>
+                    
+                    <h3>🎯 Core Functionality</h3>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>📋 Template System</h4>
+                            <ul>
+                                <li>Create reusable budget templates</li>
+                                <li>Category-specific data fields</li>
+                                <li>Template upload/download</li>
+                                <li>Example data integration</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>📅 Period Management</h4>
+                            <ul>
+                                <li>Create time-based budget periods</li>
+                                <li>Copy items from templates</li>
+                                <li>Edit period details inline</li>
+                                <li>Period-specific analytics</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>💰 Category System</h4>
+                            <ul>
+                                <li><strong>Income:</strong> No paid status tracking</li>
+                                <li><strong>Bills:</strong> Due dates & frequency</li>
+                                <li><strong>Expenses:</strong> Expense frequency</li>
+                                <li><strong>Savings:</strong> Amount & goals</li>
+                                <li><strong>Debt:</strong> Payment tracking</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>📊 Analytics Dashboard</h4>
+                            <ul>
+                                <li>Real-time budget calculations</li>
+                                <li>Period filtering</li>
+                                <li>Visual progress indicators</li>
+                                <li>Net balance tracking</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>📤 Export System</h4>
+                            <ul>
+                                <li><strong>Markdown:</strong> Organized, readable format</li>
+                                <li><strong>CSV:</strong> Categorized data structure</li>
+                                <li><strong>JSON:</strong> Complete backup format</li>
+                                <li>No internal IDs in exports</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4>🎨 User Experience</h4>
+                            <ul>
+                                <li>Responsive design (mobile-first)</li>
+                                <li>Dark/light theme support</li>
+                                <li>Smooth animations (Framer Motion)</li>
+                                <li>Accessibility features</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3>🧩 Component Architecture</h3>
+                    
+                    <div class="code-block">
+<span class="comment">// Component Hierarchy Example</span>
+<span class="function">HomePage</span>
+├── <span class="property">Dashboard</span>           <span class="comment">// Analytics & overview</span>
+├── <span class="property">BudgetCategorySection</span> <span class="comment">// Category container</span>
+│   ├── <span class="property">TemplateItemPicker</span> <span class="comment">// Template-based item selection</span>
+│   └── <span class="property">BudgetItemRow</span>     <span class="comment">// Individual item display</span>
+├── <span class="property">PeriodManager</span>        <span class="comment">// Period CRUD operations</span>
+├── <span class="property">TemplateManager</span>      <span class="comment">// Template CRUD operations</span>
+└── <span class="property">DataManagement</span>       <span class="comment">// Export/Import functionality</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Setup Guide Tab -->
+            <div id="setup" class="tab-content">
+                <div class="section">
+                    <h2>🛠️ Initial Setup Guide</h2>
+                    
+                    <h3>📋 Prerequisites</h3>
+                    <ul>
+                        <li>Node.js 18+ installed</li>
+                        <li>npm or yarn package manager</li>
+                        <li>Git for version control</li>
+                        <li>VS Code (recommended) with TypeScript extension</li>
+                    </ul>
+                    
+                    <h3>🚀 Quick Start Commands</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Create Next.js App</strong>
+                        <div class="command">npx create-next-app@latest budget-app --typescript --tailwind --app</div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Install Dependencies</strong>
+                        <div class="code-block">
+npm install zustand uuid date-fns
+npm install framer-motion lucide-react
+npm install class-variance-authority clsx tailwind-merge
+npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu
+npm install @radix-ui/react-select @radix-ui/react-switch
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Install Dev Dependencies</strong>
+                        <div class="code-block">
+npm install -D @types/uuid vitest @vitejs/plugin-react
+npm install -D jsdom @testing-library/react @testing-library/jest-dom
+npm install -D prettier eslint-config-next
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Configure Tailwind CSS</strong>
+                        <div class="code-block">
+<span class="comment">// tailwind.config.js</span>
+<span class="keyword">module.exports</span> = {
+  content: [<span class="string">'./src/**/*.{js,ts,jsx,tsx,mdx}'</span>],
+  theme: {
+    extend: {
+      animation: {
+        <span class="string">'fade-in'</span>: <span class="string">'fadeIn 0.3s ease-in-out'</span>,
+      },
+    },
+  },
+  plugins: [],
+}
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Setup TypeScript Config</strong>
+                        <div class="code-block">
+<span class="comment">// tsconfig.json</span>
+{
+  <span class="string">"compilerOptions"</span>: {
+    <span class="string">"target"</span>: <span class="string">"es5"</span>,
+    <span class="string">"lib"</span>: [<span class="string">"dom"</span>, <span class="string">"dom.iterable"</span>, <span class="string">"es6"</span>],
+    <span class="string">"allowJs"</span>: <span class="keyword">true</span>,
+    <span class="string">"skipLibCheck"</span>: <span class="keyword">true</span>,
+    <span class="string">"strict"</span>: <span class="keyword">true</span>,
+    <span class="string">"paths"</span>: {
+      <span class="string">"@/*"</span>: [<span class="string">"./src/*"</span>]
+    }
+  }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Components Tab -->
+            <div id="components" class="tab-content">
+                <div class="section">
+                    <h2>🧩 Component Deep Dive</h2>
+                    
+                    <h3>🎨 UI Component System (shadcn/ui)</h3>
+                    <p>The app uses shadcn/ui components built on top of Radix UI primitives. These provide:</p>
+                    <ul>
+                        <li><strong>Accessibility:</strong> ARIA labels, keyboard navigation</li>
+                        <li><strong>Customization:</strong> Tailwind CSS styling</li>
+                        <li><strong>Consistency:</strong> Design system adherence</li>
+                        <li><strong>Flexibility:</strong> Composable components</li>
+                    </ul>
+                    
+                    <h4>📝 Button Component Example</h4>
+                    <div class="code-block">
+<span class="comment">// components/ui/button.tsx</span>
+<span class="keyword">import</span> <span class="operator">*</span> <span class="keyword">as</span> <span class="property">React</span> <span class="keyword">from</span> <span class="string">"react"</span>
+<span class="keyword">import</span> <span class="punctuation">{</span> <span class="property">cva</span> <span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">"class-variance-authority"</span>
+
+<span class="keyword">const</span> <span class="function">buttonVariants</span> <span class="operator">=</span> <span class="function">cva</span><span class="punctuation">(</span>
+  <span class="string">"inline-flex items-center justify-center rounded-md text-sm font-medium"</span><span class="punctuation">,</span>
+  <span class="punctuation">{</span>
+    <span class="property">variants</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+      <span class="property">variant</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+        <span class="property">default</span><span class="punctuation">:</span> <span class="string">"bg-primary text-primary-foreground hover:bg-primary/90"</span><span class="punctuation">,</span>
+        <span class="property">outline</span><span class="punctuation">:</span> <span class="string">"border border-input hover:bg-accent hover:text-accent-foreground"</span><span class="punctuation">,</span>
+      <span class="punctuation">},</span>
+      <span class="property">size</span><span class="punctuation">:</span> <span class="punctuation">{</span>
+        <span class="property">default</span><span class="punctuation">:</span> <span class="string">"h-10 px-4 py-2"</span><span class="punctuation">,</span>
+        <span class="property">sm</span><span class="punctuation">:</span> <span class="string">"h-9 rounded-md px-3"</span><span class="punctuation">,</span>
+      <span class="punctuation">},</span>
+    <span class="punctuation">},</span>
+    <span class="property">defaultVariants</span><span class="punctuation">:</span> <span class="punctuation">{</span> <span class="property">variant</span><span class="punctuation">:</span> <span class="string">"default"</span><span class="punctuation">,</span> <span class="property">size</span><span class="punctuation">:</span> <span class="string">"default"</span> <span class="punctuation">},</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">)</span>
+                    </div>
+                    
+                    <h3>💰 Budget-Specific Components</h3>
+                    
+                    <h4>🏗️ BudgetCategorySection</h4>
+                    <p>Container component that manages a category (income, bills, etc.)</p>
+                    <div class="code-block">
+<span class="comment">// Key responsibilities:</span>
+- Renders category header and total
+- Contains TemplateItemPicker <span class="keyword">for</span> adding items
+- Maps through items <span class="keyword">and</span> renders BudgetItemRow
+- Handles add/edit/delete operations
+- Calculates category totals
+                    </div>
+                    
+                    <h4>🎯 TemplateItemPicker</h4>
+                    <p>Replaces individual forms with template-based item selection</p>
+                    <div class="code-block">
+<span class="comment">// Features:</span>
+- Shows template items <span class="keyword">as</span> clickable options
+- Displays relevant fields (due dates, frequencies)
+- Allows custom item creation
+- Integrates with template system
+- Category-specific data handling
+                    </div>
+                    
+                    <h4>📋 BudgetItemRow</h4>
+                    <p>Displays individual budget items with actions</p>
+                    <div class="code-block">
+<span class="comment">// Simplified design:</span>
+- Name <span class="keyword">and</span> amount display
+- Edit/delete actions
+- No paid status <span class="keyword">for</span> income
+- No redundant category display
+- Mobile-responsive layout
+                    </div>
+                    
+                    <h3>📊 Dashboard Component</h3>
+                    <p>Comprehensive analytics and overview component</p>
+                    <div class="code-block">
+<span class="comment">// Dashboard features:</span>
+- Period filtering dropdown
+- Real-time budget calculations
+- Visual progress indicators
+- Category breakdowns
+- Net balance tracking
+- Responsive grid layout
+                    </div>
+                </div>
+            </div>
+            
+            <!-- State Management Tab -->
+            <div id="state" class="tab-content">
+                <div class="section">
+                    <h2>🔄 State Management with Zustand</h2>
+                    
+                    <h3>🧠 Why Zustand?</h3>
+                    <ul>
+                        <li><strong>Simplicity:</strong> No boilerplate, easy to understand</li>
+                        <li><strong>TypeScript:</strong> Excellent TypeScript support</li>
+                        <li><strong>Performance:</strong> Minimal re-renders</li>
+                        <li><strong>Size:</strong> Small bundle size (2.5kb)</li>
+                        <li><strong>Flexibility:</strong> Works outside React components</li>
+                    </ul>
+                    
+                    <h3>🏗️ Store Structure</h3>
+                    <div class="code-block">
+<span class="comment">// store/budget.ts</span>
+<span class="keyword">interface</span> <span class="function">BudgetStore</span> {
+  <span class="comment">// State</span>
+  template: BudgetTemplate
+  periods: BudgetPeriod[]
+  currentPeriodId: <span class="keyword">string</span> | <span class="keyword">null</span>
+  
+  <span class="comment">// Template Actions</span>
+  updateTemplate: (template: BudgetTemplate) => <span class="keyword">void</span>
+  addTemplateItem: (item: BudgetItem) => <span class="keyword">void</span>
+  updateTemplateItem: (id: <span class="keyword">string</span>, updates: Partial&lt;BudgetItem&gt;) => <span class="keyword">void</span>
+  deleteTemplateItem: (id: <span class="keyword">string</span>) => <span class="keyword">void</span>
+  
+  <span class="comment">// Period Actions</span>
+  createPeriod: (period: Omit&lt;BudgetPeriod, <span class="string">'id'</span>&gt;) => <span class="keyword">void</span>
+  updatePeriod: (id: <span class="keyword">string</span>, updates: Partial&lt;BudgetPeriod&gt;) => <span class="keyword">void</span>
+  deletePeriod: (id: <span class="keyword">string</span>) => <span class="keyword">void</span>
+  setCurrentPeriod: (id: <span class="keyword">string</span>) => <span class="keyword">void</span>
+  
+  <span class="comment">// Computed Values</span>
+  getCurrentPeriod: () => BudgetPeriod | <span class="keyword">undefined</span>
+  calculateSummary: (items: BudgetItem[]) => BudgetSummary
+  
+  <span class="comment">// Data Management</span>
+  exportData: () => <span class="keyword">string</span>
+  importData: (data: <span class="keyword">any</span>) => <span class="keyword">void</span>
+  clearAll: () => <span class="keyword">void</span>
+}
+                    </div>
+                    
+                    <h3>💾 Storage Adapter Pattern</h3>
+                    <p>Abstraction layer for data persistence, ready for backend integration</p>
+                    <div class="code-block">
+<span class="comment">// lib/storage.ts</span>
+<span class="keyword">interface</span> <span class="function">StorageAdapter</span> {
+  getItem: (key: <span class="keyword">string</span>) => <span class="keyword">string</span> | <span class="keyword">null</span>
+  setItem: (key: <span class="keyword">string</span>, value: <span class="keyword">string</span>) => <span class="keyword">void</span>
+  removeItem: (key: <span class="keyword">string</span>) => <span class="keyword">void</span>
+  clearAll: () => <span class="keyword">void</span>
+}
+
+<span class="comment">// Current implementation uses localStorage</span>
+<span class="comment">// Easy to swap for API calls later</span>
+<span class="keyword">export</span> <span class="keyword">const</span> storageAdapter: StorageAdapter = {
+  getItem: (key) => localStorage.getItem(key),
+  setItem: (key, value) => localStorage.setItem(key, value),
+  removeItem: (key) => localStorage.removeItem(key),
+  clearAll: () => localStorage.clear(),
+}
+                    </div>
+                    
+                    <h3>🔧 Store Implementation Pattern</h3>
+                    <div class="code-block">
+<span class="comment">// Example store action</span>
+<span class="keyword">const</span> <span class="function">useBudgetStore</span> = <span class="function">create</span>&lt;BudgetStore&gt;((set, get) => ({
+  template: createEmptyTemplate(),
+  periods: [],
+  currentPeriodId: <span class="keyword">null</span>,
+  
+  addTemplateItem: (item) => set((state) => {
+    <span class="keyword">const</span> newTemplate = {
+      ...state.template,
+      items: [...state.template.items, item],
+      updatedAt: <span class="keyword">new</span> <span class="function">Date</span>().toISOString(),
+    }
+    
+    <span class="comment">// Save to storage</span>
+    storageAdapter.setItem(<span class="string">'budget-template'</span>, JSON.stringify(newTemplate))
+    
+    <span class="keyword">return</span> { template: newTemplate }
+  }),
+  
+  calculateSummary: (items) => {
+    <span class="comment">// Pure function for calculations</span>
+    <span class="keyword">return</span> items.reduce((acc, item) => {
+      <span class="keyword">switch</span> (item.category) {
+        <span class="keyword">case</span> <span class="string">'income'</span>: acc.totalIncome += item.amount; <span class="keyword">break</span>
+        <span class="keyword">case</span> <span class="string">'bills'</span>: acc.totalBills += item.amount; <span class="keyword">break</span>
+        <span class="comment">// ... other categories</span>
+      }
+      <span class="keyword">return</span> acc
+    }, initialSummary)
+  },
+}))
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export System Tab -->
+            <div id="exports" class="tab-content">
+                <div class="section">
+                    <h2>📤 Advanced Export System</h2>
+                    
+                    <h3>🎯 Export Goals</h3>
+                    <ul>
+                        <li><strong>Multiple Formats:</strong> Markdown, CSV, JSON for different use cases</li>
+                        <li><strong>Organized Structure:</strong> Mirror app's categorized organization</li>
+                        <li><strong>Clean Data:</strong> No internal IDs or technical details</li>
+                        <li><strong>Rich Formatting:</strong> Emojis, tables, summaries in Markdown</li>
+                        <li><strong>Period Separation:</strong> Clear delineation between periods and templates</li>
+                    </ul>
+                    
+                    <h3>📄 Markdown Export Features</h3>
+                    <div class="code-block">
+<span class="comment">// lib/export-utils.ts - Markdown Export</span>
+<span class="keyword">export</span> <span class="keyword">function</span> <span class="function">exportToMarkdown</span>(data: ExportData): <span class="keyword">void</span> {
+  <span class="keyword">let</span> markdown = <span class="string">''</span>
+  
+  <span class="comment">// Header with metadata</span>
+  markdown += <span class="string">`# Budget Export\n\n`</span>
+  markdown += <span class="string">`**Generated:** ${new Date().toLocaleDateString()}\n\n`</span>
+  
+  <span class="comment">// Template section with categories</span>
+  markdown += <span class="string">`## 📋 Template: ${data.template.name}\n\n`</span>
+  
+  <span class="comment">// Group by category and add emojis</span>
+  Object.entries(templateByCategory).forEach(([category, items]) => {
+    <span class="keyword">const</span> categoryEmoji = getCategoryEmoji(category)
+    markdown += <span class="string">`### ${categoryEmoji} ${category}\n\n`</span>
+    
+    <span class="comment">// Markdown table for each category</span>
+    markdown += <span class="string">`| Name | Amount | Notes | Due Date | Frequency |\n`</span>
+    markdown += <span class="string">`|------|--------|-------|----------|----------|\n`</span>
+    
+    items.forEach(item => {
+      markdown += <span class="string">`| ${item.name} | ${formatCurrency(item.amount)} | ... |\n`</span>
+    })
+  })
+  
+  <span class="comment">// Period sections with summaries</span>
+  <span class="comment">// ... detailed period breakdown</span>
+}
+                    </div>
+                    
+                    <h3>📊 CSV Export Structure</h3>
+                    <div class="code-block">
+<span class="comment">// Organized CSV with clear sections</span>
+<span class="property">Budget Export</span> - <span class="number">2025-07-24</span>
+<span class="property">Generated from Budget App</span>
+
+<span class="keyword">TEMPLATE:</span> <span class="string">Default Template</span>
+<span class="property">Category</span>,<span class="property">Name</span>,<span class="property">Amount</span>,<span class="property">Notes</span>,<span class="property">Due Date</span>,<span class="property">Frequency</span>,<span class="property">Expense Frequency</span>
+
+<span class="comment">--- INCOME ---</span>
+<span class="string">income</span>,<span class="string">DVA2</span>,<span class="number">1300</span>,<span class="string">Monthly disability</span>,,,
+<span class="string">income</span>,<span class="string">Side Hustle</span>,<span class="number">500</span>,<span class="string">Freelance work</span>,,,
+
+<span class="comment">--- BILLS ---</span>
+<span class="string">bills</span>,<span class="string">Rent</span>,<span class="number">1200</span>,<span class="string">Monthly rent</span>,,<span class="string">monthly</span>,
+<span class="string">bills</span>,<span class="string">Electric</span>,<span class="number">150</span>,<span class="string">Utility bill</span>,,<span class="string">monthly</span>,
+
+<span class="keyword">PERIOD:</span> <span class="string">January 2025</span> <span class="punctuation">(</span><span class="number">2025-01-01</span> <span class="keyword">to</span> <span class="number">2025-01-31</span><span class="punctuation">)</span>
+<span class="property">Category</span>,<span class="property">Name</span>,<span class="property">Amount</span>,<span class="property">Notes</span>,<span class="property">Due Date</span>,<span class="property">Frequency</span>,<span class="property">Expense Frequency</span>
+
+<span class="comment">--- PERIOD SUMMARY ---</span>
+<span class="property">Total Income</span>,<span class="number">1800</span>
+<span class="property">Total Bills</span>,<span class="number">1350</span>
+<span class="property">Net Balance</span>,<span class="number">450</span>
+                    </div>
+                    
+                    <h3>⚙️ Export Utility Functions</h3>
+                    <div class="code-block">
+<span class="comment">// Helper functions for exports</span>
+<span class="keyword">function</span> <span class="function">groupByCategory</span>(items: BudgetItem[]): Record&lt;<span class="keyword">string</span>, BudgetItem[]&gt; {
+  <span class="keyword">return</span> items.reduce((acc, item) => {
+    <span class="keyword">if</span> (!acc[item.category]) acc[item.category] = []
+    acc[item.category].push(item)
+    <span class="keyword">return</span> acc
+  }, {} <span class="keyword">as</span> Record&lt;<span class="keyword">string</span>, BudgetItem[]&gt;)
+}
+
+<span class="keyword">function</span> <span class="function">getCategoryEmoji</span>(category: <span class="keyword">string</span>): <span class="keyword">string</span> {
+  <span class="keyword">const</span> emojis = {
+    income: <span class="string">'💰'</span>, bills: <span class="string">'📄'</span>, expenses: <span class="string">'🛒'</span>,
+    savings: <span class="string">'🏦'</span>, debt: <span class="string">'💳'</span>
+  }
+  <span class="keyword">return</span> emojis[category] || <span class="string">'📋'</span>
+}
+
+<span class="keyword">function</span> <span class="function">calculatePeriodSummary</span>(items: BudgetItem[]) {
+  <span class="comment">// Calculate totals by category</span>
+  <span class="comment">// Return summary object with net balance</span>
+}
+                    </div>
+                    
+                    <h3>💾 Download Implementation</h3>
+                    <div class="code-block">
+<span class="comment">// Browser download functionality</span>
+<span class="keyword">function</span> <span class="function">downloadFile</span>(content: <span class="keyword">string</span>, filename: <span class="keyword">string</span>, mimeType: <span class="keyword">string</span>) {
+  <span class="keyword">const</span> blob = <span class="keyword">new</span> <span class="function">Blob</span>([content], { type: mimeType })
+  <span class="keyword">const</span> link = document.createElement(<span class="string">'a'</span>)
+  <span class="keyword">const</span> url = URL.createObjectURL(blob)
+  
+  link.setAttribute(<span class="string">'href'</span>, url)
+  link.setAttribute(<span class="string">'download'</span>, filename)
+  link.style.visibility = <span class="string">'hidden'</span>
+  
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recreation Steps Tab -->
+            <div id="recreation" class="tab-content">
+                <div class="section">
+                    <h2>🔄 Step-by-Step Recreation Guide</h2>
+                    
+                    <div class="warning">
+                        <strong>⚠️ Important:</strong> This guide assumes you have Node.js 18+, npm, and basic React/TypeScript knowledge.
+                    </div>
+                    
+                    <h3>🚀 Phase 1: Project Setup</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Initialize Next.js Project</strong>
+                        <div class="code-block">
+<span class="comment"># Create new Next.js app with TypeScript and Tailwind</span>
+npx create-next-app@latest budget-app --typescript --tailwind --app --src-dir
+
+<span class="comment"># Navigate to project</span>
+cd budget-app
+
+<span class="comment"># Start development server</span>
+npm run dev
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Install Core Dependencies</strong>
+                        <div class="code-block">
+<span class="comment"># State management and utilities</span>
+npm install zustand uuid date-fns
+
+<span class="comment"># UI and animations</span>
+npm install framer-motion lucide-react
+
+<span class="comment"># CSS utilities</span>
+npm install class-variance-authority clsx tailwind-merge
+
+<span class="comment"># Radix UI components</span>
+npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-select @radix-ui/react-switch @radix-ui/react-slot
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Install Development Dependencies</strong>
+                        <div class="code-block">
+<span class="comment"># Testing</span>
+npm install -D vitest @vitejs/plugin-react jsdom
+npm install -D @testing-library/react @testing-library/jest-dom
+
+<span class="comment"># TypeScript types</span>
+npm install -D @types/uuid
+
+<span class="comment"># Code quality</span>
+npm install -D prettier eslint-config-next
+                        </div>
+                    </div>
+                    
+                    <h3>🏗️ Phase 2: Project Structure</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Create Folder Structure</strong>
+                        <div class="code-block">
+<span class="comment"># Create main directories</span>
+mkdir -p src/components/ui
+mkdir -p src/components/budget/forms
+mkdir -p src/lib
+mkdir -p src/store
+mkdir -p src/types
+mkdir -p src/test
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Setup TypeScript Types</strong>
+                        <p>Create <code class="inline-code">src/types/budget.ts</code> with all interface definitions:</p>
+                        <div class="code-block">
+<span class="comment">// src/types/budget.ts</span>
+<span class="keyword">export</span> <span class="keyword">interface</span> <span class="function">BudgetItem</span> <span class="punctuation">{</span>
+  <span class="property">id</span><span class="punctuation">:</span> <span class="keyword">string</span>
+  <span class="property">name</span><span class="punctuation">:</span> <span class="keyword">string</span>
+  <span class="property">amount</span><span class="punctuation">:</span> <span class="keyword">number</span>
+  <span class="property">category</span><span class="punctuation">:</span> <span class="string">'income'</span> <span class="operator">|</span> <span class="string">'bills'</span> <span class="operator">|</span> <span class="string">'expenses'</span> <span class="operator">|</span> <span class="string">'savings'</span> <span class="operator">|</span> <span class="string">'debt'</span>
+  <span class="property">notes</span><span class="operator">?</span><span class="punctuation">:</span> <span class="keyword">string</span>
+  <span class="property">dueDate</span><span class="operator">?</span><span class="punctuation">:</span> <span class="keyword">string</span>
+  <span class="property">frequency</span><span class="operator">?</span><span class="punctuation">:</span> <span class="string">'monthly'</span> <span class="operator">|</span> <span class="string">'weekly'</span> <span class="operator">|</span> <span class="string">'biweekly'</span> <span class="operator">|</span> <span class="string">'quarterly'</span> <span class="operator">|</span> <span class="string">'yearly'</span> <span class="operator">|</span> <span class="string">'one-time'</span>
+  <span class="property">expenseFrequency</span><span class="operator">?</span><span class="punctuation">:</span> <span class="string">'daily'</span> <span class="operator">|</span> <span class="string">'weekly'</span> <span class="operator">|</span> <span class="string">'monthly'</span> <span class="operator">|</span> <span class="string">'yearly'</span> <span class="operator">|</span> <span class="string">'one-time'</span>
+<span class="punctuation">}</span>
+
+<span class="comment">// ... other interfaces</span>
+                        </div>
+                    </div>
+                    
+                    <h3>⚡ Phase 3: Core Infrastructure</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">6</span>
+                        <strong>Create Storage Adapter</strong>
+                        <p>Build the storage abstraction layer in <code>src/lib/storage.ts</code></p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">7</span>
+                        <strong>Setup Zustand Store</strong>
+                        <p>Create the main state management in <code>src/store/budget.ts</code></p>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">8</span>
+                        <strong>Build Utility Functions</strong>
+                        <p>Create helper functions in <code>src/lib/utils.ts</code></p>
+                    </div>
+                    
+                    <h3>🎨 Phase 4: UI Components</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">9</span>
+                        <strong>Create Base UI Components</strong>
+                        <p>Build shadcn/ui style components:</p>
+                        <ul>
+                            <li><code>button.tsx</code> - Primary button component</li>
+                            <li><code>card.tsx</code> - Container component</li>
+                            <li><code>input.tsx</code> - Form input</li>
+                            <li><code>select.tsx</code> - Dropdown component</li>
+                            <li><code>label.tsx</code> - Form label</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">10</span>
+                        <strong>Build Budget Components</strong>
+                        <p>Create business-specific components in order:</p>
+                        <ol>
+                            <li><code>budget-item-row.tsx</code> - Individual item display</li>
+                            <li><code>budget-summary.tsx</code> - Summary calculations</li>
+                            <li><code>template-item-picker.tsx</code> - Template selection</li>
+                            <li><code>budget-category-section.tsx</code> - Category container</li>
+                            <li><code>dashboard.tsx</code> - Analytics component</li>
+                        </ol>
+                    </div>
+                    
+                    <h3>📋 Phase 5: Forms and Management</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">11</span>
+                        <strong>Create Category-Specific Forms</strong>
+                        <p>Build forms for each category in <code>src/components/budget/forms/</code>:</p>
+                        <ul>
+                            <li><code>income-form.tsx</code> - Income entry</li>
+                            <li><code>bill-form.tsx</code> - Bills with due dates</li>
+                            <li><code>expense-form.tsx</code> - Expenses with frequency</li>
+                            <li><code>savings-form.tsx</code> - Savings goals</li>
+                            <li><code>debt-form.tsx</code> - Debt payments</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">12</span>
+                        <strong>Build Management Components</strong>
+                        <ul>
+                            <li><code>period-manager.tsx</code> - Period CRUD</li>
+                            <li><code>template-manager.tsx</code> - Template CRUD</li>
+                            <li><code>data-management.tsx</code> - Export/Import</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>📤 Phase 6: Advanced Features</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">13</span>
+                        <strong>Implement Export System</strong>
+                        <p>Create <code>src/lib/export-utils.ts</code> with:</p>
+                        <ul>
+                            <li>Markdown export with categories and summaries</li>
+                            <li>Organized CSV export</li>
+                            <li>JSON backup functionality</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">14</span>
+                        <strong>Add Template System</strong>
+                        <p>Build template upload/download in <code>src/lib/template-data.ts</code> and <code>src/lib/template-upload.ts</code></p>
+                    </div>
+                    
+                    <h3>🎨 Phase 7: Polish and Testing</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">15</span>
+                        <strong>Add Theme Support</strong>
+                        <ul>
+                            <li><code>theme-provider.tsx</code> - Context provider</li>
+                            <li><code>theme-toggle.tsx</code> - Dark/light switcher</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">16</span>
+                        <strong>Setup Testing</strong>
+                        <p>Configure Vitest and add tests:</p>
+                        <ul>
+                            <li><code>vitest.config.ts</code> - Test configuration</li>
+                            <li><code>src/test/setup.ts</code> - Test setup</li>
+                            <li><code>src/test/storage.test.ts</code> - Storage tests</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">17</span>
+                        <strong>Final Integration</strong>
+                        <p>Integrate everything in <code>src/app/page.tsx</code>:</p>
+                        <ul>
+                            <li>Navigation between views</li>
+                            <li>Mobile responsiveness</li>
+                            <li>Animation integration</li>
+                            <li>Error handling</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>🚀 Phase 8: Deployment Ready</h3>
+                    
+                    <div class="step">
+                        <span class="step-number">18</span>
+                        <strong>Production Optimization</strong>
+                        <div class="code-block">
+<span class="comment"># Build for production</span>
+npm run build
+
+<span class="comment"># Test production build</span>
+npm start
+
+<span class="comment"># Run tests</span>
+npm test
+
+<span class="comment"># Lint code</span>
+npm run lint
+                        </div>
+                    </div>
+                    
+                    <div class="success">
+                        <strong>🎉 Congratulations!</strong> You now have a fully functional budget app with all the features implemented in this project.
+                    </div>
+                    
+                    <h3>📚 Learning Outcomes</h3>
+                    <ul>
+                        <li><strong>Next.js 14 App Router:</strong> Modern React patterns and routing</li>
+                        <li><strong>TypeScript:</strong> Type-safe development practices</li>
+                        <li><strong>Zustand:</strong> Simple state management</li>
+                        <li><strong>Component Architecture:</strong> Reusable, composable components</li>
+                        <li><strong>Storage Patterns:</strong> Adapter pattern for data persistence</li>
+                        <li><strong>Export Systems:</strong> Multiple data formats and organization</li>
+                        <li><strong>Testing:</strong> Unit and integration testing setup</li>
+                        <li><strong>Responsive Design:</strong> Mobile-first development</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🔥 Created with ❤️ for learning Next.js and modern React development</p>
+            <p>📅 Generated: <span id="currentDate"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+        
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
