@@ -165,7 +165,7 @@ BudgetApp/
     <section className="mb-8">
       <h2 className="text-2xl font-bold mb-4 border-l-4 border-primary pl-4">🛠️ Setup Guide</h2>
       <div className="bg-blue-100 border border-blue-200 text-blue-900 rounded-lg p-4 mb-6">
-        <strong>🎯 Setup Philosophy:</strong> The Budget App is designed to be easy to set up and run. You'll need a few basic tools and a few minutes to get started.
+        <strong>🎯 Setup Philosophy:</strong> The Budget App is designed to be easy to set up and run. You&apos;ll need a few basic tools and a few minutes to get started.
       </div>
       <h3 className="text-xl font-semibold mt-8 mb-2">🚀 Prerequisites</h3>
       <ul className="list-disc list-inside mb-6">
@@ -266,7 +266,7 @@ npm run dev
     <section className="mb-8">
       <h2 className="text-2xl font-bold mb-4 border-l-4 border-primary pl-4">🔄 Recreation Steps</h2>
       <div className="bg-blue-100 border border-blue-200 text-blue-900 rounded-lg p-4 mb-6">
-        <strong>🎯 Recreation Philosophy:</strong> The Budget App is designed to be easy to set up and run. You'll need a few basic tools and a few minutes to get started.
+        <strong>🎯 Recreation Philosophy:</strong> The Budget App is designed to be easy to set up and run. You&apos;ll need a few basic tools and a few minutes to get started.
       </div>
       <h3 className="text-xl font-semibold mt-8 mb-2">🚀 Prerequisites</h3>
       <ul className="list-disc list-inside mb-6">
