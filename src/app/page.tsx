@@ -12,12 +12,12 @@ import { BudgetSummaryCard } from '@/components/budget/budget-summary';
 import { BudgetCategorySection } from '@/components/budget/budget-category-section';
 import { PeriodManager } from '@/components/budget/period-manager';
 import { TemplateManager } from '@/components/budget/template-manager';
-import { DataManagement } from '@/components/budget/data-management';
+import { DataManagement } from '@/components/budget/data-management'; // used only in dashboard now
 import { CATEGORIES } from '@/types/budget';
 import { exportToCSV } from '@/lib/utils';
 import { EXAMPLE_TEMPLATE } from '@/lib/template-data';
 
-type View = 'dashboard' | 'budget' | 'template' | 'periods' | 'data';
+type View = 'dashboard' | 'budget' | 'template' | 'periods';
 
 export default function HomePage() {
   const [currentView, setCurrentView] = useState<View>('dashboard');
@@ -66,12 +66,16 @@ export default function HomePage() {
     : calculateSummary([]);
 
   const navigation = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'budget', label: 'Budget', icon: PiggyBank },
-    { id: 'template', label: 'Template', icon: Settings },
-    { id: 'periods', label: 'Periods', icon: Calendar },
-    { id: 'data', label: 'Data', icon: Calculator },
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+    // { id: 'periods', label: 'Periods', icon: Calendar },
+
   ] as const;
+
+  // Collapsible state for dashboard and data management
+  const [templateOpen, setTemplateOpen] = useState(false);
+  const [dashboardOpen, setDashboardOpen] = useState(false);
+  const [dataOpen, setDataOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -155,10 +159,91 @@ export default function HomePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <AnimatePresence mode="wait">
           {currentView === 'dashboard' && (
-            <Dashboard 
-              periods={periods}
-              calculateSummary={calculateSummary}
-            />
+            <>
+              <div className="mb-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setDashboardOpen((open) => !open)}
+                  aria-expanded={dashboardOpen}
+                  className="w-full flex justify-between items-center"
+                >
+                  <span>Dashboard</span>
+                  <span>{dashboardOpen ? '▲' : '▼'}</span>
+                </Button>
+                <AnimatePresence>
+                  {dashboardOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <Dashboard 
+                        periods={periods}
+                        calculateSummary={calculateSummary}
+                      />
+                    </motion.div>
+                  )}
+              <div className="mb-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setTemplateOpen((open) => !open)}
+                  aria-expanded={templateOpen}
+                  className="w-full flex justify-between items-center"
+                >
+                  <span>Budget Template</span>
+                  <span>{templateOpen ? '▲' : '▼'}</span>
+                </Button>
+                <AnimatePresence>
+                  {templateOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4">
+                        <TemplateManager
+                          template={template}
+                          onUpdateTemplate={updateTemplate}
+                          onAddTemplateItem={addTemplateItem}
+                          onUpdateTemplateItem={updateTemplateItem}
+                          onDeleteTemplateItem={deleteTemplateItem}
+                          calculateSummary={calculateSummary}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+                </AnimatePresence>
+              </div>
+              <div className="mb-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setDataOpen((open) => !open)}
+                  aria-expanded={dataOpen}
+                  className="w-full flex justify-between items-center"
+                >
+                  <span>Data Management</span>
+                  <span>{dataOpen ? '▲' : '▼'}</span>
+                </Button>
+                <AnimatePresence>
+                  {dataOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-4">
+                        <DataManagement />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </>
           )}
 
           {currentView === 'budget' && (
@@ -185,6 +270,17 @@ export default function HomePage() {
                   </Button>
                 )}
               </div>
+
+              {/* Period Management Inline */}
+              <PeriodManager
+                periods={periods}
+                currentPeriodId={currentPeriodId}
+                onCreatePeriod={createPeriod}
+                onUpdatePeriod={updatePeriod}
+                onDeletePeriod={deletePeriod}
+                onSelectPeriod={setCurrentPeriod}
+                calculateSummary={calculateSummary}
+              />
 
               {currentPeriod ? (
                 <>
@@ -256,51 +352,10 @@ export default function HomePage() {
             </motion.div>
           )}
 
-          {currentView === 'periods' && (
-            <motion.div
-              key="periods"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-6"
-            >
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">Budget Periods</h2>
-                <p className="text-muted-foreground">
-                  Create and manage your budget periods based on your pay schedule.
-                </p>
-              </div>
-              
-              <PeriodManager
-                periods={periods}
-                currentPeriodId={currentPeriodId}
-                onCreatePeriod={createPeriod}
-                onUpdatePeriod={updatePeriod}
-                onDeletePeriod={deletePeriod}
-                onSelectPeriod={setCurrentPeriod}
-                calculateSummary={calculateSummary}
-              />
-            </motion.div>
-          )}
+          {/* Periods view removed: period management is now in the budget view */}
 
-          {currentView === 'data' && (
-            <motion.div
-              key="data"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-6"
-            >
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">Data Management</h2>
-                <p className="text-muted-foreground">
-                  Export, import, and manage your budget data.
-                </p>
-              </div>
-              
-              <DataManagement />
-            </motion.div>
-          )}
+          {/* Data view removed: data management is now in the dashboard view */}
+
         </AnimatePresence>
       </main>
     </div>
